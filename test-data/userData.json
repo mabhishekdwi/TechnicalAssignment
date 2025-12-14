@@ -1,0 +1,58 @@
+{
+  "subscription": {
+    "emailPrefix": "homesubscribe"
+  },
+  "preRegisterUser": {
+    "name": "Pre Register User",
+    "emailPrefix": "preregister",
+    "password": "Test@123",
+    "title": "Mr",
+    "dateOfBirth": {
+      "day": "15",
+      "month": "July",
+      "year": "1991"
+    },
+    "firstName": "Pre",
+    "lastName": "Register",
+    "company": "Test Company",
+    "address": "123 Main Street",
+    "address2": "Suite 200",
+    "country": "United States",
+    "state": "California",
+    "city": "Los Angeles",
+    "zipcode": "90001",
+    "mobileNumber": "9876543210"
+  },
+  "searchCartUser": {
+    "name": "Search Cart User",
+    "emailPrefix": "searchcart",
+    "password": "Test@123",
+    "title": "Mr",
+    "dateOfBirth": {
+      "day": "10",
+      "month": "May",
+      "year": "1990"
+    },
+    "firstName": "Search",
+    "lastName": "User",
+    "address": "123 Test St",
+    "country": "India",
+    "state": "Maharashtra",
+    "city": "Mumbai",
+    "zipcode": "400001",
+    "mobileNumber": "9876543210"
+  },
+  "paymentDetails": {
+    "nameOnCard": "Pre Register User",
+    "cardNumber": "4111111111111111",
+    "cvc": "123",
+    "expiryMonth": "12",
+    "expiryYear": "2026"
+  },
+  "searchTerms": {
+    "dress": "Dress"
+  },
+  "orderComments": {
+    "businessHours": "Please deliver during business hours"
+  }
+}

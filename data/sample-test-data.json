@@ -1,0 +1,7 @@
+{
+  "testCase": "TC002",
+  "user": {
+    "name": "Test User",
+    "email": "test@example.com"
+  }
+}

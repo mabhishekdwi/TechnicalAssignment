@@ -1,0 +1,6 @@
+name,email,password,day,month,year,firstName,lastName,company,address,address2,country,state,city,zipcode,mobileNumber
+testabhishek,testabhishek@yopmail.com,Qwerty@12,10,1,1990,test,abhishek,testing,noida,noida,India,uttarpradesh,noida,201306,9876543210
+johndoe,johndoe@yopmail.com,Test@123,15,6,1985,John,Doe,Tech Corp,123 Main St,Apt 5,United States,California,Los Angeles,90001,1234567890
+janedoe,janedoe@yopmail.com,Pass@456,20,3,1992,Jane,Doe,ABC Company,456 Oak Ave,Suite 10,India,Maharashtra,Mumbai,400001,9876543211
+bobsmith,bobsmith@yopmail.com,Secure@789,5,12,1988,Bob,Smith,XYZ Ltd,789 Pine Rd,Floor 3,United States,New York,New York,10001,5551234567
+alicejones,alicejones@yopmail.com,Strong@321,25,9,1995,Alice,Jones,Innovation Inc,321 Elm St,Unit 2,India,Karnataka,Bangalore,560001,9876543212
