@@ -82,13 +82,9 @@ playwright-automation-framework/
 │
 ├── utils/
 │   ├── ApiUtil.ts                  # HTTP client wrapper (GET/POST/PUT/PATCH/DELETE)
-│   ├── DatabaseUtil.ts             # MySQL / PostgreSQL helpers
-│   ├── ExcelUtil.ts                # Excel test-data reader
-│   ├── CsvUtil.ts                  # CSV test-data reader
 │   ├── JsonUtil.ts                 # JSON test-data loader
-│   └── helpers.ts                  # Misc shared helpers
+│   └── helpers.ts                  # SauceDemo-specific shared helpers
 │
-├── playwright.config.ts            # Default config (automationexercise.com)
 ├── playwright.config.saucedemo.ts  # Web UI config (saucedemo.com)
 └── playwright.config.api.ts        # API config (restful-booker)
 ```
@@ -138,13 +134,16 @@ cp .env.example .env
 
 ### Environment Variables
 
-All variables are optional; sensible defaults are provided.
+All variables are optional; sensible defaults are provided in `.env.example`.
 
-| Variable   | Default                           | Purpose                       |
-|------------|-----------------------------------|-------------------------------|
-| `BASE_URL` | `https://automationexercise.com/` | Legacy test target            |
-| `ENV`      | `dev`                             | Environment selector          |
-| `CI`       | *(set by GitHub Actions)*         | Headless mode + retry control |
+| Variable                     | Default                                       | Purpose                        |
+|------------------------------|-----------------------------------------------|--------------------------------|
+| `SAUCEDEMO_BASE_URL`         | `https://www.saucedemo.com`                   | SauceDemo base URL             |
+| `SAUCEDEMO_STANDARD_USER`    | `standard_user`                               | SauceDemo primary test user    |
+| `RESTFUL_BOOKER_BASE_URL`    | `https://restful-booker.herokuapp.com`        | Restful-Booker base URL        |
+| `RESTFUL_BOOKER_USERNAME`    | `admin`                                       | Restful-Booker auth username   |
+| `RESTFUL_BOOKER_PASSWORD`    | `password123`                                 | Restful-Booker auth password   |
+| `CI`                         | *(set by GitHub Actions)*                     | Headless mode + retry control  |
 
 ---
 
@@ -457,9 +456,8 @@ Each page of the application has a corresponding class that:
 ### Fixture Pattern
 
 Custom Playwright fixtures in `fixtures/authFixture.ts` provide:
-- `authenticatedPage` — a pre-logged-in page ready to use
-- `loginAsUser(username, password)` — per-test dynamic login
-- `testWithStorageState` — session state reuse for fast authentication
+- `authenticatedPage` — a pre-logged-in page ready to use (logs in as `standard_user`)
+- `loginAsUser(username, password)` — per-test dynamic login for any SauceDemo user
 
 ### Tag-Based Suite Organisation
 
@@ -472,13 +470,11 @@ npx playwright test --config=playwright.config.api.ts --grep "@e2e"
 
 ### Utility Separation
 
-| Utility        | Responsibility                           |
-|----------------|------------------------------------------|
-| `ApiUtil`      | HTTP client (wraps `APIRequestContext`)  |
-| `DatabaseUtil` | SQL query execution (MySQL/PostgreSQL)   |
-| `ExcelUtil`    | Excel test-data read/write               |
-| `CsvUtil`      | CSV test-data handling                   |
-| `JsonUtil`     | JSON fixture loading                     |
+| Utility     | Responsibility                                          |
+|-------------|---------------------------------------------------------|
+| `ApiUtil`   | HTTP client (wraps `APIRequestContext`)                 |
+| `JsonUtil`  | JSON fixture loading with dot-notation access           |
+| `helpers`   | SauceDemo-specific helpers (cart count, price parsing)  |
 
 ---
 

@@ -1,6 +1,0 @@
-name,email,password,title,day,month,year,firstName,lastName,company,address,address2,country,state,city,zipcode,mobileNumber,newsletter,specialOffers
-Test User,testuser@example.com,Test@123,Mr,15,January,1990,Test,User,Test Company,123 Test Street,Apartment 4B,United States,California,Los Angeles,90001,1234567890,true,true
-John Doe,johndoe@example.com,SecurePass@456,Mr,20,March,1985,John,Doe,Acme Corporation,456 Main Street,Suite 200,United States,New York,New York City,10001,2125551234,true,false
-Jane Smith,janesmith@example.com,MyPassword@789,Mrs,10,July,1992,Jane,Smith,Tech Solutions,789 Oak Avenue,,India,Maharashtra,Mumbai,400001,9876543210,false,true
-Bob Johnson,bobjohnson@example.com,Password@2024,Mr,5,December,1988,Bob,Johnson,Creative Agency,321 Pine Road,Building A,Canada,Ontario,Toronto,M5H 2N2,4165551234,true,true
-Alice Williams,alicew@example.com,Secure123@,Mrs,25,September,1995,Alice,Williams,Design Studio,654 Elm Street,Floor 3,United States,Texas,Austin,78701,5125551234,false,false

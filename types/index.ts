@@ -1,105 +1,90 @@
-// Type definitions for test data structure
+// Type definitions for SauceDemo Web UI and Restful-Booker API
 
-export interface Viewport {
-  width: number;
-  height: number;
+// ── SauceDemo ─────────────────────────────────────────────────────────────────
+
+export type SauceDemoUser = 'standard_user' | 'locked_out_user' | 'problem_user' | 'performance_glitch_user';
+
+export interface SauceDemoCredentials {
+  username: SauceDemoUser | string;
+  password: string;
 }
 
-export interface WidgetLoadingTest {
-  id: string;
-  device: string;
-  viewport: Viewport;
-  description: string;
-  expected_elements: string[];
+export interface SauceDemoProduct {
+  name: string;
+  price?: number;
+  description?: string;
 }
 
-export interface UIInteractionTest {
-  id: string;
-  action: string;
-  prompt: string;
-  description: string;
-  validate: string[];
-  key?: string;
+export interface CheckoutInfo {
+  firstName: string;
+  lastName: string;
+  postalCode: string;
 }
 
-export interface ResponseRenderingTest {
-  id: string;
-  prompt: string;
-  description: string;
-  expected_type: string;
-  validate: string[];
+export interface SauceDemoTestData {
+  users: {
+    standard: SauceDemoCredentials;
+    locked: SauceDemoCredentials;
+    problem: SauceDemoCredentials;
+    perfGlitch: SauceDemoCredentials;
+  };
+  checkout: {
+    valid: CheckoutInfo;
+  };
+  products: {
+    backpack: string;
+    bikeLight: string;
+    boltShirt: string;
+  };
 }
 
-export interface MultilingualTest {
-  id: string;
-  language: string;
-  prompt: string;
-  description: string;
-  expected_direction: string;
-  validate: string[];
+// ── Restful-Booker ────────────────────────────────────────────────────────────
+
+export interface BookingDates {
+  checkin: string;
+  checkout: string;
 }
 
-export interface ChatbotUIBehavior {
-  description: string;
-  widget_loading: WidgetLoadingTest[];
-  ui_interactions: UIInteractionTest[];
-  response_rendering: ResponseRenderingTest[];
-  multilingual_support: MultilingualTest[];
+export interface Booking {
+  firstname: string;
+  lastname: string;
+  totalprice: number;
+  depositpaid: boolean;
+  bookingdates: BookingDates;
+  additionalneeds?: string;
 }
 
-export interface ResponseQualityTest {
-  id: string;
-  prompt: string;
-  language: string;
-  description: string;
-  expected_keywords: string[];
-  min_length: number;
+export interface BookingResponse {
+  bookingid: number;
+  booking: Booking;
 }
 
-export interface HallucinationTest {
-  id: string;
-  prompt: string;
-  description: string;
-  check_for: string[];
-  should_not_contain: string[];
+export interface BookingId {
+  bookingid: number;
 }
 
-export interface GPTResponseValidation {
-  description: string;
-  response_quality: ResponseQualityTest[];
-  hallucination_detection: HallucinationTest[];
+export interface AuthToken {
+  token: string;
 }
 
-export interface XSSTest {
-  id: string;
-  payload: string;
-  description: string;
-  expected_behavior: string;
+export interface RestfulBookerCredentials {
+  username: string;
+  password: string;
 }
 
-export interface PromptInjectionTest {
-  id: string;
-  payload: string;
-  description: string;
-  expected_behavior: string;
+export interface RestfulBookerTestData {
+  auth: {
+    valid: RestfulBookerCredentials;
+    invalid: RestfulBookerCredentials;
+  };
+  booking: {
+    sample: Booking;
+  };
 }
 
-export interface EdgeCaseTest {
-  id: string;
-  input: string;
-  description: string;
-  expected_behavior: string;
-}
-
-export interface SecurityInjectionHandling {
-  description: string;
-  xss_prevention: XSSTest[];
-  prompt_injection: PromptInjectionTest[];
-  edge_cases: EdgeCaseTest[];
-}
+// ── Combined test-data shape (matches data/sample-test-data.json) ─────────────
 
 export interface TestData {
-  A_chatbot_ui_behavior?: ChatbotUIBehavior;
-  B_gpt_response_validation?: GPTResponseValidation;
-  C_security_injection_handling?: SecurityInjectionHandling;
+  saucedemo: SauceDemoTestData;
+  restfulBooker: RestfulBookerTestData;
 }
