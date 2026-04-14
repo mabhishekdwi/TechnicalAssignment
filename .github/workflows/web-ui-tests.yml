@@ -1,0 +1,104 @@
+name: "Web UI Tests — SauceDemo"
+
+on:
+  push:
+    branches: [main, master, develop]
+    paths:
+      - 'tests/saucedemo/**'
+      - 'pages/saucedemo/**'
+      - 'playwright.config.saucedemo.ts'
+      - '.github/workflows/web-ui-tests.yml'
+  pull_request:
+    branches: [main, master, develop]
+  workflow_dispatch:
+    inputs:
+      suite:
+        description: "Test suite filter"
+        required: false
+        default: "all"
+        type: choice
+        options:
+          - all
+          - smoke
+          - regression
+          - e2e
+          - login
+          - products
+          - checkout
+
+jobs:
+  web-ui-tests:
+    name: "Web UI Tests (${{ github.event.inputs.suite || 'all' }})"
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+
+    steps:
+      # ── Checkout ────────────────────────────────────────────────────────────
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      # ── Node.js Setup ───────────────────────────────────────────────────────
+      - name: Setup Node.js 20
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: "npm"
+
+      # ── Install Dependencies ─────────────────────────────────────────────────
+      - name: Install npm dependencies
+        run: npm ci
+
+      # ── Install Playwright Browsers ──────────────────────────────────────────
+      - name: Install Chromium browser
+        run: npx playwright install chromium --with-deps
+
+      # ── Run Tests ────────────────────────────────────────────────────────────
+      - name: Run Web UI Tests
+        run: |
+          SUITE="${{ github.event.inputs.suite || 'all' }}"
+          CONFIG="--config=playwright.config.saucedemo.ts"
+
+          case "$SUITE" in
+            smoke)      npx playwright test $CONFIG --grep "@smoke" ;;
+            regression) npx playwright test $CONFIG --grep "@regression" ;;
+            e2e)        npx playwright test $CONFIG --grep "@e2e" ;;
+            login)      npx playwright test $CONFIG tests/saucedemo/login.spec.ts ;;
+            products)   npx playwright test $CONFIG tests/saucedemo/products.spec.ts ;;
+            checkout)   npx playwright test $CONFIG tests/saucedemo/checkout.spec.ts ;;
+            *)          npx playwright test $CONFIG ;;
+          esac
+        env:
+          CI: "true"
+
+      # ── Artifacts ────────────────────────────────────────────────────────────
+      - name: Upload HTML Report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: web-ui-html-report
+          path: reports/saucedemo-report/
+          retention-days: 30
+
+      - name: Upload Allure Results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: web-ui-allure-results
+          path: allure-results/
+          retention-days: 30
+
+      - name: Upload Screenshots & Videos on Failure
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: web-ui-failure-artifacts
+          path: test-results/
+          retention-days: 7
+
+      - name: Upload JSON Results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: web-ui-json-results
+          path: reports/saucedemo-results.json
+          retention-days: 30

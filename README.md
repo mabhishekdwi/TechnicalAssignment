@@ -1,391 +1,544 @@
-# Advanced Playwright Test Framework
+# Playwright Automation Framework
 
-A comprehensive, production-ready Playwright testing framework with Allure reporting, API testing, database utilities, and multi-browser support.
+> **Enterprise-grade test automation** for Web UI and REST API testing built on **Playwright + TypeScript**.
+>
+> Covers two targets:
+> - **Web UI** — [SauceDemo](https://www.saucedemo.com/) (e-commerce demo app)
+> - **API** — [Restful-Booker](https://restful-booker.herokuapp.com/) (hotel booking REST API)
 
-## Features
+---
 
-- **Allure Reporting** - Detailed test reports with step-by-step execution, screenshots, and attachments
-- **Login Fixtures** - Reusable authentication fixtures for faster test execution
-- **Excel Utility** - Read and write test data from Excel files
-- **JSON Utility** - Dynamic JSON data management with filtering and merging
-- **Database Utility** - Support for MySQL, PostgreSQL, and MongoDB
-- **API Utility** - Complete REST API testing with all HTTP methods
-- **Environment Management** - Dynamic configuration for multiple environments (dev, qa, staging, prod)
-- **Multi-Browser Support** - Run tests on Chrome, Firefox, Safari, Edge, and mobile browsers
-- **Parallel Execution** - Fast test execution with configurable workers
-- **GitHub Actions CI/CD** - Automated testing pipeline with Allure report deployment
-- **TypeScript** - Full TypeScript support with type safety
+## Table of Contents
 
-## Installation
+1. [Project Overview](#1-project-overview)
+2. [Framework Architecture](#2-framework-architecture)
+3. [Prerequisites & Setup](#3-prerequisites--setup)
+4. [Running Tests Locally](#4-running-tests-locally)
+5. [Test Coverage Summary](#5-test-coverage-summary)
+6. [CI/CD Pipeline](#6-cicd-pipeline)
+7. [Reporting](#7-reporting)
+8. [Team Onboarding Guide](#8-team-onboarding-guide)
+9. [Design Patterns](#9-design-patterns)
+10. [API Test Strategy](#10-api-test-strategy)
+11. [Contributing](#11-contributing)
 
-1. Clone the repository:
-```bash
-git clone <repository-url>
-cd playwright-automation-framework
-```
+---
 
-2. Install dependencies:
-```bash
-npm install
-```
+## 1. Project Overview
 
-3. Install Playwright browsers:
-```bash
-npx playwright install
-```
+This framework was built to replace a 1-week manual regression cycle run by 10 QA engineers, automating the critical regression path across UI and API layers.
 
-4. Set up environment variables:
-```bash
-cp .env.example .env
-# Edit .env with your configuration
-```
+| Dimension        | Detail                                             |
+|------------------|----------------------------------------------------|
+| **Framework**    | Playwright `^1.40` + TypeScript `^5.3`             |
+| **Pattern**      | Page Object Model (POM) + Fixture-based setup      |
+| **Reporting**    | Allure + Playwright HTML + JSON                    |
+| **CI/CD**        | GitHub Actions (path-triggered, suite-selectable)  |
+| **Parallelism**  | 4 workers locally / 2 workers in CI               |
+| **Retries**      | 1 locally / 2 in CI                               |
 
-## Project Structure
+---
+
+## 2. Framework Architecture
 
 ```
 playwright-automation-framework/
+│
 ├── .github/
 │   └── workflows/
-│       └── playwright.yml      # GitHub Actions CI/CD workflow
+│       ├── web-ui-tests.yml        # CI for SauceDemo UI tests
+│       └── api-tests.yml           # CI for Restful-Booker API tests
+│
 ├── config/
-│   ├── apiEndpoints.ts         # API endpoints configuration
-│   └── environment.ts          # Environment management
-├── data/
-│   ├── test-data.json          # Sample JSON test data
-│   └── test-data.xlsx          # Sample Excel test data
+│   ├── environment.ts              # Multi-env manager (dev/qa/staging/prod)
+│   └── apiEndpoints.ts             # Centralised API endpoint constants
+│
 ├── fixtures/
-│   └── authFixture.ts          # Login/authentication fixtures
+│   └── authFixture.ts              # Reusable authenticated-page fixtures
+│
 ├── pages/
-│   └── BasePage.ts             # Base page object model
+│   ├── BasePage.ts                 # Shared Playwright wrappers (all pages extend this)
+│   └── saucedemo/                  # SauceDemo page objects
+│       ├── LoginPage.ts
+│       ├── InventoryPage.ts
+│       ├── CartPage.ts
+│       └── CheckoutPage.ts
+│
 ├── tests/
-│   ├── example.spec.ts         # Example tests with all features
-│   └── test.spec.ts            # Your test files
+│   ├── saucedemo/                  # Web UI test specs
+│   │   ├── login.spec.ts           # Login module (4 tests)
+│   │   ├── products.spec.ts        # Product catalog (5 tests)
+│   │   ├── checkout.spec.ts        # Cart & checkout (5 tests)
+│   │   └── e2e.spec.ts             # Full purchase E2E (1 test)
+│   └── api/                        # REST API test specs
+│       ├── auth.spec.ts            # POST /auth (3 tests)
+│       ├── booking-get.spec.ts     # GET /booking (4 tests)
+│       ├── booking-create-update.spec.ts  # POST & PUT /booking (5 tests)
+│       ├── booking-delete.spec.ts  # DELETE /booking/:id (3 tests)
+│       └── booking-e2e.spec.ts     # Full lifecycle E2E (1 test)
+│
+├── types/
+│   └── index.ts                    # Shared TypeScript interfaces
+│
 ├── utils/
-│   ├── ApiUtil.ts              # API testing utility
-│   ├── DatabaseUtil.ts         # Database utility
-│   ├── ExcelUtil.ts            # Excel read/write utility
-│   ├── JsonUtil.ts             # JSON utility
-│   └── helpers.ts              # Helper functions
-├── .env.example                # Environment variables template
-├── playwright.config.ts        # Playwright configuration
-└── package.json                # Dependencies and scripts
+│   ├── ApiUtil.ts                  # HTTP client wrapper (GET/POST/PUT/PATCH/DELETE)
+│   ├── DatabaseUtil.ts             # MySQL / PostgreSQL helpers
+│   ├── ExcelUtil.ts                # Excel test-data reader
+│   ├── CsvUtil.ts                  # CSV test-data reader
+│   ├── JsonUtil.ts                 # JSON test-data loader
+│   └── helpers.ts                  # Misc shared helpers
+│
+├── playwright.config.ts            # Default config (automationexercise.com)
+├── playwright.config.saucedemo.ts  # Web UI config (saucedemo.com)
+└── playwright.config.api.ts        # API config (restful-booker)
 ```
 
-## Running Tests
+### Layer Diagram
 
-### Run all tests
+```
+┌─────────────────────────────────┐
+│          Test Specs             │  ← What to test (describe/test blocks)
+├─────────────────────────────────┤
+│        Page Objects             │  ← How to interact with the UI
+├─────────────────────────────────┤
+│   BasePage / ApiUtil / Utils    │  ← Shared infrastructure & helpers
+├─────────────────────────────────┤
+│  Playwright / Node.js / TypeScript │  ← Runtime
+└─────────────────────────────────┘
+```
+
+---
+
+## 3. Prerequisites & Setup
+
+### System Requirements
+
+| Tool          | Version  |
+|---------------|----------|
+| Node.js       | ≥ 20 LTS |
+| npm           | ≥ 10     |
+| Git           | any      |
+
+### Installation
+
 ```bash
-npm test
+# 1. Clone the repository
+git clone <repository-url>
+cd playwright-automation-framework
+
+# 2. Install Node dependencies
+npm ci
+
+# 3. Install Playwright browsers
+npx playwright install --with-deps
+
+# 4. (Optional) Copy and configure environment variables
+cp .env.example .env
 ```
 
-### Run tests in headed mode
+### Environment Variables
+
+All variables are optional; sensible defaults are provided.
+
+| Variable   | Default                           | Purpose                       |
+|------------|-----------------------------------|-------------------------------|
+| `BASE_URL` | `https://automationexercise.com/` | Legacy test target            |
+| `ENV`      | `dev`                             | Environment selector          |
+| `CI`       | *(set by GitHub Actions)*         | Headless mode + retry control |
+
+---
+
+## 4. Running Tests Locally
+
+### Web UI — SauceDemo
+
 ```bash
-npm run test:headed
+# Run all SauceDemo tests
+npm run sd:test
+
+# Run in browser window (headed)
+npm run sd:test:headed
+
+# Filter by suite tag
+npm run sd:test:smoke       # @smoke tagged tests
+npm run sd:test:regression  # @regression tagged tests
+npm run sd:test:e2e         # End-to-End test only
+
+# Filter by spec file
+npm run sd:test:login       # Login module
+npm run sd:test:products    # Product catalog
+npm run sd:test:checkout    # Cart & checkout
+
+# Open HTML report
+npm run sd:report
 ```
 
-### Run tests in parallel
+### API — Restful-Booker
+
 ```bash
-npm run test:parallel
+# Run all API tests
+npm run api:test
+
+# Filter by suite tag
+npm run api:test:smoke      # @smoke tagged tests
+npm run api:test:e2e        # E2E lifecycle test only
+
+# Filter by spec file
+npm run api:test:auth       # Authentication tests
+npm run api:test:get        # GET booking tests
+npm run api:test:crud       # Create/Update booking tests
+npm run api:test:delete     # Delete booking tests
+
+# Open HTML report
+npm run api:report
 ```
 
-### Run tests on specific browser
+### Allure Report
+
 ```bash
-npm run test:chrome
-npm run test:firefox
-npm run test:safari
-npm run test:edge
+npm run allure:generate   # Generate report from allure-results/
+npm run allure:open       # Open the generated report
+npm run allure:serve      # Serve directly from results (no generate step)
 ```
 
-### Run tests on all browsers
+### Playwright UI Mode (interactive debugging)
+
 ```bash
-npm run test:allbrowsers
+npm run test:ui           # Opens the Playwright UI explorer
 ```
 
-## Allure Reports
+---
 
-### Generate Allure report
-```bash
-npm run allure:generate
+## 5. Test Coverage Summary
+
+### Part 1 — Web UI (SauceDemo)
+
+| Module       | Test ID  | Type     | Tags               | Description                                        |
+|--------------|----------|----------|--------------------|----------------------------------------------------|
+| **Login**    | TC-L-001 | Positive | `@smoke @critical` | Successful login with valid credentials            |
+| **Login**    | TC-L-002 | Negative | `@smoke`           | Login failure — wrong password                     |
+| **Login**    | TC-L-003 | Negative |                    | Locked-out user is rejected                        |
+| **Login**    | TC-L-004 | Negative |                    | Empty fields show validation error                 |
+| **Products** | TC-P-001 | Positive | `@smoke @critical` | Add product to cart — badge increments             |
+| **Products** | TC-P-002 | Positive |                    | Product listing renders ≥ 6 items                  |
+| **Products** | TC-P-003 | Positive |                    | Sort products by price low-to-high                 |
+| **Products** | TC-P-004 | Negative |                    | Cart is empty when no items added                  |
+| **Products** | TC-P-005 | Positive |                    | Add specific product by name                       |
+| **Checkout** | TC-C-001 | Positive | `@smoke @critical` | Complete checkout: add → cart → ship → confirm     |
+| **Checkout** | TC-C-002 | Negative | `@smoke`           | Form validation: all fields empty                  |
+| **Checkout** | TC-C-003 | Negative |                    | Form validation: missing last name                 |
+| **Checkout** | TC-C-004 | Negative |                    | Form validation: missing postal code               |
+| **Checkout** | TC-C-005 | Positive |                    | Continue Shopping returns to inventory             |
+| **E2E**      | E2E-001  | E2E      | `@e2e @smoke @critical` | Login → Browse → Add → Cart → Checkout → Confirm |
+
+**Total: 15 UI tests** (minimum 6 required ✓, 1 E2E required ✓)
+
+---
+
+### Part 2 — API (Restful-Booker)
+
+| Endpoint              | Test ID      | Type     | Tags               | Description                                                 |
+|-----------------------|--------------|----------|--------------------|-------------------------------------------------------------|
+| `POST /auth`          | TC-AUTH-001  | Positive | `@smoke @critical` | Valid credentials → token returned                          |
+| `POST /auth`          | TC-AUTH-002  | Negative | `@smoke`           | Invalid password → "Bad credentials"                        |
+| `POST /auth`          | TC-AUTH-003  | Negative |                    | Empty credentials → "Bad credentials"                       |
+| `GET /booking`        | TC-GET-001   | Positive | `@smoke @critical` | All bookings → non-empty array with bookingid               |
+| `GET /booking/:id`    | TC-GET-002   | Positive | `@smoke @critical` | Valid ID → full booking with schema validation              |
+| `GET /booking/:id`    | TC-GET-003   | Negative | `@smoke`           | Non-existent ID → 404                                       |
+| `GET /booking`        | TC-GET-004   | Positive |                    | Filter by checkin date                                      |
+| `POST /booking`       | TC-CU-001    | Positive | `@smoke @critical` | Create with valid payload → bookingid returned              |
+| `POST /booking`       | TC-CU-002    | Negative |                    | Incomplete payload → 500                                    |
+| `PUT /booking/:id`    | TC-CU-003    | Positive | `@smoke`           | Full update with auth token → updated fields verified       |
+| `PUT /booking/:id`    | TC-CU-004    | Negative |                    | Update without auth → 403                                   |
+| `PATCH /booking/:id`  | TC-CU-005    | Positive |                    | Partial update → only specified fields changed              |
+| `DELETE /booking/:id` | TC-DEL-001   | Positive | `@smoke @critical` | Delete with auth → 201, confirmed by 404 on GET             |
+| `DELETE /booking/:id` | TC-DEL-002   | Negative | `@smoke`           | Delete without auth → 403                                   |
+| `DELETE /booking/:id` | TC-DEL-003   | Negative |                    | Delete non-existent ID → 405                                |
+| **E2E Lifecycle**     | E2E-API-001  | E2E      | `@e2e @critical`   | Auth → Create → Verify → PUT → PATCH → Delete → Verify 404  |
+
+**Total: 16 API tests** (minimum 8 required ✓, 1 E2E required ✓)
+
+---
+
+## 6. CI/CD Pipeline
+
+### Workflows
+
+| Workflow       | File                                    | Triggers                                                   |
+|----------------|-----------------------------------------|------------------------------------------------------------|
+| Web UI Tests   | `.github/workflows/web-ui-tests.yml`    | Push/PR to main/master/develop; path-filtered; manual      |
+| API Tests      | `.github/workflows/api-tests.yml`       | Push/PR to main/master/develop; path-filtered; manual      |
+
+### Path-based Triggering
+
+Workflows only run when relevant files change — no wasted CI minutes:
+
+- **Web UI**: `tests/saucedemo/**`, `pages/saucedemo/**`, `playwright.config.saucedemo.ts`
+- **API**: `tests/api/**`, `playwright.config.api.ts`
+
+### Manual Dispatch with Suite Selection
+
+Go to **Actions → [Workflow] → Run workflow** and pick from:
+
+```
+all | smoke | regression | e2e | login | products | checkout
 ```
 
-### Open Allure report
-```bash
-npm run allure:open
+### Pipeline Steps
+
+```
+Checkout → Node 20 setup → npm ci → Install Playwright browsers
+  → Run tests (suite-filtered) → Upload reports & artifacts
 ```
 
-### Serve Allure report
-```bash
-npm run allure:serve
+### Artifacts per Run
+
+| Artifact                      | Retention |
+|-------------------------------|-----------|
+| Playwright HTML Report        | 30 days   |
+| Allure Results                | 30 days   |
+| JSON Results                  | 30 days   |
+| Screenshots / Videos (failure)| 7 days    |
+
+---
+
+## 7. Reporting
+
+Three report formats are generated automatically on every run:
+
+1. **Playwright HTML Report** — interactive, filterable, includes traces, screenshots, videos
+   - Web UI: `reports/saucedemo-report/`
+   - API: `reports/api-report/`
+
+2. **Allure Report** — rich visual report with suite → feature → story → step hierarchy
+   - Results: `allure-results/`
+
+3. **JSON** — machine-readable output for dashboards or Slack notifications
+   - Web UI: `reports/saucedemo-results.json`
+   - API: `reports/api-results.json`
+
+**On failure**: trace files, screenshots, and videos are automatically retained and uploaded as CI artifacts.
+
+---
+
+## 8. Team Onboarding Guide
+
+### New SDET Checklist
+
+```
+□ Install Node.js 20 LTS (https://nodejs.org/)
+□ Clone the repository and run: npm ci
+□ Run: npx playwright install --with-deps
+□ Run: npm run sd:test:smoke         ← confirm UI environment works
+□ Run: npm run api:test:smoke        ← confirm API environment works
+□ Open the HTML reports to review results
+□ Read this README fully
+□ Familiarise yourself with the tag convention below
 ```
 
-## Using the Framework
-
-### 1. Excel Utility
+### Writing Your First UI Test
 
 ```typescript
-import { ExcelUtil } from './utils/ExcelUtil.js';
-
-const excelUtil = new ExcelUtil();
-
-// Load Excel file
-excelUtil.loadFile('test-data.xlsx');
-
-// Get all data from first sheet
-const data = excelUtil.getSheetData();
-
-// Get specific test data by ID
-const testData = excelUtil.getTestData('TC001');
-
-// Filter data by column
-const filteredData = excelUtil.filterByColumn('Status', 'Active');
-
-// Write data to Excel
-excelUtil.writeToExcel(data, 'output.xlsx', 'Results');
-```
-
-### 2. JSON Utility
-
-```typescript
-import { JsonUtil } from './utils/JsonUtil.js';
-
-const jsonUtil = new JsonUtil();
-
-// Load JSON file
-const data = jsonUtil.loadJson('test-data.json');
-
-// Get nested value using dot notation
-const value = jsonUtil.getValue(data, 'user.credentials.username');
-
-// Get test data by ID
-const testData = jsonUtil.getTestDataById('test-data.json', 'TC001');
-
-// Filter test data
-const filtered = jsonUtil.filterTestData('test-data.json',
-  (item) => item.status === 'active'
-);
-
-// Write JSON file
-jsonUtil.writeJson(data, 'output.json');
-```
-
-### 3. API Utility
-
-```typescript
-import { ApiUtil } from './utils/ApiUtil.js';
-import { AUTOMATION_EXERCISE_ENDPOINTS } from './config/apiEndpoints.js';
-
-const apiUtil = new ApiUtil();
-
-// Initialize API client
-await apiUtil.init({
-  baseURL: 'https://api.example.com',
-  headers: { 'Authorization': 'Bearer token' }
-});
-
-// GET request
-const response = await apiUtil.get('/users');
-const data = await apiUtil.getJson(response);
-
-// POST request
-const response = await apiUtil.post('/users', {
-  data: { name: 'John', email: 'john@example.com' }
-});
-
-// PUT request
-await apiUtil.put('/users/123', {
-  data: { name: 'John Updated' }
-});
-
-// PATCH request
-await apiUtil.patch('/users/123', {
-  data: { email: 'newemail@example.com' }
-});
-
-// DELETE request
-await apiUtil.delete('/users/123');
-
-// Verify response
-expect(apiUtil.verifyStatus(response, 200)).toBeTruthy();
-```
-
-### 4. Database Utility
-
-```typescript
-import { DatabaseUtil } from './utils/DatabaseUtil.js';
-
-const dbUtil = new DatabaseUtil();
-
-// MySQL
-dbUtil.configure({
-  type: 'mysql',
-  host: 'localhost',
-  port: 3306,
-  username: 'root',
-  password: 'password',
-  database: 'testdb'
-});
-
-await dbUtil.connect();
-
-// Execute query
-const users = await dbUtil.executeQuery('SELECT * FROM users WHERE id = ?', [1]);
-
-// Get single record
-const user = await dbUtil.getOne('SELECT * FROM users WHERE email = ?', ['test@example.com']);
-
-await dbUtil.disconnect();
-
-// MongoDB
-dbUtil.configure({
-  type: 'mongodb',
-  host: 'localhost',
-  port: 27017,
-  database: 'testdb',
-  uri: 'mongodb://localhost:27017'
-});
-
-await dbUtil.connect();
-
-// Find documents
-const docs = await dbUtil.findDocuments('users', { status: 'active' });
-
-// Insert document
-await dbUtil.insertDocument('users', { name: 'John', email: 'john@example.com' });
-
-await dbUtil.disconnect();
-```
-
-### 5. Login Fixture
-
-```typescript
-import { test, expect } from '../fixtures/authFixture.js';
-
-// Test with authenticated page
-test('Dashboard test', async ({ authenticatedPage }) => {
-  // User is already logged in
-  await authenticatedPage.goto('/dashboard');
-  // Continue with test
-});
-
-// Login with custom credentials
-test('Custom login', async ({ loginAsUser, page }) => {
-  await loginAsUser('custom@example.com', 'password');
-  await page.goto('/dashboard');
-});
-```
-
-### 6. Environment Configuration
-
-```typescript
-import { env } from './config/environment.js';
-
-// Get current environment
-const currentEnv = env.getEnvironment();
-
-// Get environment URLs
-const baseURL = env.getBaseURL();
-const apiURL = env.getApiBaseURL();
-
-// Get credentials
-const credentials = env.getCredentials();
-
-// Get database config
-const dbConfig = env.getDbConfig();
-
-// Switch environment
-env.switchEnvironment('qa');
-```
-
-### 7. Allure Steps and Reporting
-
-```typescript
+// tests/saucedemo/my-feature.spec.ts
 import { test, expect } from '@playwright/test';
 import { allure } from 'allure-playwright';
+import { LoginPage } from '../../pages/saucedemo/LoginPage.js';
+import { InventoryPage } from '../../pages/saucedemo/InventoryPage.js';
 
-test('Test with Allure steps', async ({ page }) => {
-  allure.epic('User Management');
-  allure.feature('Login');
-  allure.story('User Login');
-  allure.severity('critical');
+test.describe('My Feature', { tag: ['@regression'] }, () => {
 
-  await allure.step('Navigate to login page', async () => {
-    await page.goto('/login');
-    allure.parameter('URL', page.url());
+  test('TC-MF-001: My positive test', { tag: ['@positive', '@smoke'] }, async ({ page }) => {
+    allure.epic('SauceDemo');
+    allure.feature('My Feature');
+    allure.story('Happy Path');
+    allure.severity('normal');
+
+    const loginPage = new LoginPage(page);
+    const inventoryPage = new InventoryPage(page);
+
+    await allure.step('Navigate and login', async () => {
+      await loginPage.navigate();
+      await loginPage.login('standard_user', 'secret_sauce');
+      await expect(page).toHaveURL(/inventory/);
+    });
+
+    await allure.step('Assert my feature works', async () => {
+      expect(await inventoryPage.getProductCount()).toBeGreaterThan(0);
+    });
   });
 
-  await allure.step('Enter credentials', async () => {
-    await page.fill('[name="email"]', 'test@example.com');
-    await page.fill('[name="password"]', 'password');
-    allure.attachment('Credentials', 'test@example.com', 'text/plain');
-  });
-
-  await allure.step('Click login button', async () => {
-    await page.click('button[type="submit"]');
-    const screenshot = await page.screenshot();
-    allure.attachment('After Login', screenshot, 'image/png');
-  });
 });
 ```
 
-## CI/CD with GitHub Actions
+### Writing Your First API Test
 
-The framework includes a complete GitHub Actions workflow that:
-- Runs tests on multiple browsers (Chrome, Firefox, Safari)
-- Executes tests in parallel with sharding
-- Generates Allure reports
-- Deploys reports to GitHub Pages
-- Supports manual workflow dispatch with environment selection
+```typescript
+// tests/api/my-endpoint.spec.ts
+import { test, expect, request } from '@playwright/test';
+import { allure } from 'allure-playwright';
 
-To use:
-1. Push your code to GitHub
-2. GitHub Actions will automatically run tests
-3. View Allure reports in the Actions artifacts or GitHub Pages
+const BASE_URL = 'https://restful-booker.herokuapp.com';
 
-## Environment Variables
+test('TC-MY-001: My API test', { tag: ['@positive', '@smoke'] }, async () => {
+  allure.epic('Restful-Booker API');
+  allure.feature('My Endpoint');
 
-Create a `.env` file based on `.env.example`:
+  const ctx = await request.newContext({ baseURL: BASE_URL });
 
-```env
-ENV=dev
-BASE_URL=https://automationexercise.com/
-DEV_USERNAME=testuser
-DEV_PASSWORD=testpass
-DEV_EMAIL=test@example.com
+  const response = await ctx.get('/booking', {
+    headers: { 'Accept': 'application/json' }
+  });
+
+  await allure.step('Verify 200 status and array response', async () => {
+    expect(response.status()).toBe(200);
+    const body = await response.json();
+    expect(Array.isArray(body)).toBeTruthy();
+  });
+
+  await ctx.dispose(); // Always dispose to avoid resource leaks
+});
 ```
 
-## Best Practices
+### Adding a New Page Object
 
-1. **Use Page Object Model** - Keep locators and actions in page objects
-2. **Use Allure Steps** - Make tests readable with descriptive steps
-3. **Data-Driven Testing** - Use Excel/JSON for test data
-4. **Environment Separation** - Use different configs for different environments
-5. **Parallel Execution** - Run tests in parallel for faster execution
-6. **Reusable Fixtures** - Use authentication fixtures to avoid repeated logins
-7. **API Testing** - Test APIs before UI for faster feedback
+1. Create `pages/saucedemo/MyPage.ts` extending `BasePage`
+2. Declare all locators as `private readonly Locator` in the constructor — prefer `data-test` attributes
+3. Write one method per user action — keep them focused
+4. Add JSDoc for non-obvious methods
 
-## Troubleshooting
+```typescript
+import { Page, Locator } from '@playwright/test';
+import BasePage from '../BasePage.js';
 
-### Allure report not generating
+export class MyPage extends BasePage {
+  private readonly myButton: Locator;
+
+  constructor(page: Page) {
+    super(page);
+    this.myButton = page.locator('[data-test="my-button"]');
+  }
+
+  async clickMyButton(): Promise<void> {
+    await this.myButton.click();
+    await this.page.waitForLoadState('load');
+  }
+}
+```
+
+### Tag Convention
+
+| Tag               | Meaning                                               |
+|-------------------|-------------------------------------------------------|
+| `@smoke`          | Critical subset — must pass on every merge to main    |
+| `@regression`     | Full suite — run before every release                 |
+| `@critical`       | High business-impact tests                            |
+| `@e2e`            | End-to-end flow tests                                 |
+| `@positive`       | Happy-path / valid-input scenarios                    |
+| `@negative`       | Error, validation, and boundary-condition scenarios   |
+| `@login`          | Login module (UI)                                     |
+| `@products`       | Product catalog module (UI)                           |
+| `@checkout`       | Cart and checkout module (UI)                         |
+| `@auth`           | Authentication endpoint (API)                         |
+| `@booking-get`    | GET booking endpoints (API)                           |
+| `@booking-crud`   | Create/Update booking endpoints (API)                 |
+| `@booking-delete` | Delete booking endpoint (API)                         |
+
+---
+
+## 9. Design Patterns
+
+### Page Object Model (POM)
+
+Each page of the application has a corresponding class that:
+- Encapsulates all locators (declared as `private readonly Locator`)
+- Exposes only meaningful **action methods** — no raw Playwright selectors in test files
+- Extends `BasePage` for shared utilities (`goto`, `click`, `fill`, `waitForElement`, etc.)
+
+### Fixture Pattern
+
+Custom Playwright fixtures in `fixtures/authFixture.ts` provide:
+- `authenticatedPage` — a pre-logged-in page ready to use
+- `loginAsUser(username, password)` — per-test dynamic login
+- `testWithStorageState` — session state reuse for fast authentication
+
+### Tag-Based Suite Organisation
+
 ```bash
-npm install -g allure-commandline
+# Any combination works
+npx playwright test --config=playwright.config.saucedemo.ts --grep "@smoke"
+npx playwright test --config=playwright.config.saucedemo.ts --grep "@negative"
+npx playwright test --config=playwright.config.api.ts --grep "@e2e"
 ```
 
-### Tests failing in CI
-- Check environment variables are set in GitHub Secrets
-- Ensure browsers are installed with `--with-deps` flag
+### Utility Separation
 
-### Database connection issues
-- Verify credentials in .env file
-- Check database is accessible from test environment
+| Utility        | Responsibility                           |
+|----------------|------------------------------------------|
+| `ApiUtil`      | HTTP client (wraps `APIRequestContext`)  |
+| `DatabaseUtil` | SQL query execution (MySQL/PostgreSQL)   |
+| `ExcelUtil`    | Excel test-data read/write               |
+| `CsvUtil`      | CSV test-data handling                   |
+| `JsonUtil`     | JSON fixture loading                     |
 
-## Contributing
+---
 
-1. Fork the repository
-2. Create a feature branch
-3. Make your changes
-4. Add tests
-5. Submit a pull request
+## 10. API Test Strategy
 
-## License
+### Approach
 
-MIT
+All API tests use **Playwright's native `request` context** — no additional HTTP library required. Each spec file is independently executable and disposes its own `APIRequestContext` after each test to prevent state leakage.
+
+### Validation Layers
+
+Every API test validates:
+
+| Layer            | What is checked                                          |
+|------------------|----------------------------------------------------------|
+| Status code      | Exact HTTP status (200, 201, 403, 404, 500)              |
+| Response schema  | Required fields exist with correct types                 |
+| Data integrity   | Response values match what was sent in the request       |
+| Security         | Unauthenticated/unauthorised requests are rejected (403) |
+
+### Authentication Strategy
+
+The Restful-Booker API uses **cookie-based token authentication**:
+
+```http
+Cookie: token=<token-value>
+```
+
+The token is obtained via `POST /auth` and injected into the `Cookie` header for all mutating operations (PUT, PATCH, DELETE). In the E2E test it is retrieved once and reused across all steps to mirror real-world usage.
+
+### E2E Lifecycle Test
+
+`tests/api/booking-e2e.spec.ts` chains all operations in a single test, validating end-to-end data integrity:
+
+```
+POST /auth          → obtain token
+POST /booking       → create booking, capture bookingid
+GET  /booking/:id   → verify created data matches payload
+PUT  /booking/:id   → full update, verify all fields changed
+GET  /booking/:id   → verify persistence of PUT
+PATCH /booking/:id  → partial update, verify only target fields changed
+DELETE /booking/:id → delete, expect 201
+GET  /booking/:id   → confirm 404 (booking is gone)
+```
+
+---
+
+## 11. Contributing
+
+1. **Branch naming**: `feature/TC-XXX-description` or `fix/TC-XXX-description`
+2. **Commit messages**: `feat: TC-L-005 add remember-me login test`
+3. **Before raising a PR**: both `npm run sd:test:smoke` and `npm run api:test:smoke` must pass
+4. **New test checklist**:
+   - [ ] Follows POM pattern — no raw Playwright selectors in spec files
+   - [ ] Allure annotations on every test (`epic`, `feature`, `story`, `severity`, `step`)
+   - [ ] At least one `@smoke` tag on critical-path tests
+   - [ ] Both positive and negative scenarios covered per endpoint/module
+   - [ ] API tests dispose their context in every test
+   - [ ] No hard-coded test data that will break on environment change
+
+---
+
+*Built with Playwright + TypeScript. Maintained by the SDET team.*

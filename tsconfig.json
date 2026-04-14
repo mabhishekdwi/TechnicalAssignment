@@ -1,10 +1,9 @@
 {
   "compilerOptions": {
     "target": "ESNext",
-    "module": "ESNext",
-    "moduleResolution": "node",
+    "module": "NodeNext",
+    "moduleResolution": "NodeNext",
     "lib": ["ESNext", "DOM"],
-    "types": ["node", "@playwright/test"],
     "strict": true,
     "esModuleInterop": true,
     "skipLibCheck": true,
@@ -13,22 +12,27 @@
     "outDir": "./dist",
     "rootDir": "./",
     "sourceMap": true,
-    "noUnusedLocals": true,
-    "noUnusedParameters": true,
     "noImplicitReturns": true,
     "noFallthroughCasesInSwitch": true,
     "allowSyntheticDefaultImports": true
   },
   "include": [
+    "config/**/*",
+    "fixtures/**/*",
     "pages/**/*",
     "tests/**/*",
+    "types/**/*",
     "utils/**/*",
-    "playwright.config.ts"
+    "playwright.config.ts",
+    "playwright.config.saucedemo.ts",
+    "playwright.config.api.ts",
+    "playwright.config.suites.ts"
   ],
   "exclude": [
     "node_modules",
     "dist",
     "reports",
-    "test-results"
+    "test-results",
+    "allure-results"
   ]
 }

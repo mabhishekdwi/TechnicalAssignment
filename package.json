@@ -39,7 +39,26 @@
     "test:api:critical": "npx playwright test tests/api-tests.spec.ts --grep @critical",
     "test:api:negative": "npx playwright test tests/api-tests.spec.ts --grep @negative",
     "test:api:working": "npx playwright test tests/api-tests-working.spec.ts",
-    "test:additional": "npx playwright test tests/additional-flows.spec.ts"
+    "test:additional": "npx playwright test tests/additional-flows.spec.ts",
+
+    "sd:test": "npx playwright test --config=playwright.config.saucedemo.ts",
+    "sd:test:headed": "npx playwright test --config=playwright.config.saucedemo.ts --headed",
+    "sd:test:smoke": "npx playwright test --config=playwright.config.saucedemo.ts --grep @smoke",
+    "sd:test:regression": "npx playwright test --config=playwright.config.saucedemo.ts --grep @regression",
+    "sd:test:e2e": "npx playwright test --config=playwright.config.saucedemo.ts --grep @e2e",
+    "sd:test:login": "npx playwright test --config=playwright.config.saucedemo.ts tests/saucedemo/login.spec.ts",
+    "sd:test:products": "npx playwright test --config=playwright.config.saucedemo.ts tests/saucedemo/products.spec.ts",
+    "sd:test:checkout": "npx playwright test --config=playwright.config.saucedemo.ts tests/saucedemo/checkout.spec.ts",
+    "sd:report": "npx playwright show-report reports/saucedemo-report",
+
+    "api:test": "npx playwright test --config=playwright.config.api.ts",
+    "api:test:smoke": "npx playwright test --config=playwright.config.api.ts --grep @smoke",
+    "api:test:e2e": "npx playwright test --config=playwright.config.api.ts --grep @e2e",
+    "api:test:auth": "npx playwright test --config=playwright.config.api.ts tests/api/auth.spec.ts",
+    "api:test:get": "npx playwright test --config=playwright.config.api.ts tests/api/booking-get.spec.ts",
+    "api:test:crud": "npx playwright test --config=playwright.config.api.ts tests/api/booking-create-update.spec.ts",
+    "api:test:delete": "npx playwright test --config=playwright.config.api.ts tests/api/booking-delete.spec.ts",
+    "api:report": "npx playwright show-report reports/api-report"
   },
   "devDependencies": {
     "@playwright/test": "^1.40.0",

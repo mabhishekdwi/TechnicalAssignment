@@ -1,0 +1,95 @@
+name: "API Tests — Restful-Booker"
+
+on:
+  push:
+    branches: [main, master, develop]
+    paths:
+      - 'tests/api/**'
+      - 'playwright.config.api.ts'
+      - '.github/workflows/api-tests.yml'
+  pull_request:
+    branches: [main, master, develop]
+  workflow_dispatch:
+    inputs:
+      suite:
+        description: "Test suite filter"
+        required: false
+        default: "all"
+        type: choice
+        options:
+          - all
+          - smoke
+          - e2e
+          - auth
+          - booking-get
+          - booking-crud
+          - booking-delete
+
+jobs:
+  api-tests:
+    name: "API Tests (${{ github.event.inputs.suite || 'all' }})"
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    steps:
+      # ── Checkout ────────────────────────────────────────────────────────────
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      # ── Node.js Setup ───────────────────────────────────────────────────────
+      - name: Setup Node.js 20
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: "npm"
+
+      # ── Install Dependencies ─────────────────────────────────────────────────
+      - name: Install npm dependencies
+        run: npm ci
+
+      # ── Install Playwright (no browsers needed for API tests) ────────────────
+      - name: Install Playwright (API only — no browser)
+        run: npx playwright install --with-deps
+
+      # ── Run Tests ────────────────────────────────────────────────────────────
+      - name: Run API Tests
+        run: |
+          SUITE="${{ github.event.inputs.suite || 'all' }}"
+          CONFIG="--config=playwright.config.api.ts"
+
+          case "$SUITE" in
+            smoke)          npx playwright test $CONFIG --grep "@smoke" ;;
+            e2e)            npx playwright test $CONFIG --grep "@e2e" ;;
+            auth)           npx playwright test $CONFIG tests/api/auth.spec.ts ;;
+            booking-get)    npx playwright test $CONFIG tests/api/booking-get.spec.ts ;;
+            booking-crud)   npx playwright test $CONFIG tests/api/booking-create-update.spec.ts ;;
+            booking-delete) npx playwright test $CONFIG tests/api/booking-delete.spec.ts ;;
+            *)              npx playwright test $CONFIG ;;
+          esac
+        env:
+          CI: "true"
+
+      # ── Artifacts ────────────────────────────────────────────────────────────
+      - name: Upload HTML Report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: api-html-report
+          path: reports/api-report/
+          retention-days: 30
+
+      - name: Upload Allure Results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: api-allure-results
+          path: allure-results/
+          retention-days: 30
+
+      - name: Upload JSON Results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: api-json-results
+          path: reports/api-results.json
+          retention-days: 30
