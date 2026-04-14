@@ -23,10 +23,8 @@
     "tests/**/*",
     "types/**/*",
     "utils/**/*",
-    "playwright.config.ts",
     "playwright.config.saucedemo.ts",
-    "playwright.config.api.ts",
-    "playwright.config.suites.ts"
+    "playwright.config.api.ts"
   ],
   "exclude": [
     "node_modules",
