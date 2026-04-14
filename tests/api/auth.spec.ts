@@ -86,11 +86,12 @@ test.describe('Authentication — POST /auth', { tag: ['@auth', '@api'] }, () =>
       allure.story('Empty Credentials');
       allure.severity('minor');
 
-      const ctx = await request.newContext({ baseURL: BASE_URL });
+      const ctx = await request.newContext({ baseURL: BASE_URL, timeout: 10000 });
 
       const response = await ctx.post('/auth', {
         data: { username: '', password: '' },
-        headers: { 'Content-Type': 'application/json' }
+        headers: { 'Content-Type': 'application/json' },
+        timeout: 10000
       });
 
       await allure.step('Verify response indicates bad credentials', async () => {
