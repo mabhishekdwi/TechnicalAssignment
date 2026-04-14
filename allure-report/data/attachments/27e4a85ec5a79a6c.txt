@@ -1,0 +1,70 @@
+POST Request: /api/createAccount
+Request Body (form): name=API+Test+User+1776142622587&email=updateuser1776142622587%40example.com&password=Test%40123&title=Mr&birth_date=15&birth_month=6&birth_year=1990&firstname=API&lastname=User&company=Test+Company&address1=123+API+Street&address2=Suite+100&country=India&zipcode=400001&state=Maharashtra&city=Mumbai&mobile_number=9876543210
+Response Status: 200 OK
+Response URL: https://automationexercise.com/api/createAccount
+Response Headers: {
+  "date": "Tue, 14 Apr 2026 04:57:10 GMT",
+  "content-type": "text/html; charset=utf-8",
+  "transfer-encoding": "chunked",
+  "connection": "keep-alive",
+  "vary": "Accept,Cookie,Accept-Encoding",
+  "referrer-policy": "same-origin",
+  "x-frame-options": "DENY",
+  "x-content-type-options": "nosniff",
+  "allow": "POST, OPTIONS",
+  "x-powered-by": "Phusion Passenger(R) 6.1.2",
+  "status": "200 OK",
+  "report-to": "{\"group\":\"cf-nel\",\"max_age\":604800,\"endpoints\":[{\"url\":\"https://a.nel.cloudflare.com/report/v4?s=3RBa2N1XK0tU7Ubsqk13i0DCUenq3UdPMGPPp54Gi%2BU1Qt0kZIWMd3YcZ76Zb%2Bb%2FO607UcCyDPxMhDfROjKjsGbeJngg1%2FR3YfWkETB8iZV%2BlC4xuhKx%2BWjHNoCbBuDWfpAHI3CmkVWU\"}]}",
+  "server": "cloudflare",
+  "cf-cache-status": "DYNAMIC",
+  "nel": "{\"report_to\":\"cf-nel\",\"success_fraction\":0.0,\"max_age\":604800}",
+  "content-encoding": "br",
+  "cf-ray": "9ec020d04ba56b56-DFW",
+  "alt-svc": "h3=\":443\"; ma=86400"
+}
+PUT Request: /api/updateAccount
+Request Body (form): name=API+Test+User+1776142622587&email=updateuser1776142622587%40example.com&password=Test%40123&title=Mr&birth_date=15&birth_month=6&birth_year=1990&firstname=Updated&lastname=User&company=Updated+Company&address1=123+API+Street&address2=Suite+100&country=India&zipcode=400001&state=Maharashtra&city=Mumbai&mobile_number=9876543210
+Response Status: 200 OK
+Response URL: https://automationexercise.com/api/updateAccount
+Response Headers: {
+  "date": "Tue, 14 Apr 2026 04:57:11 GMT",
+  "content-type": "text/html; charset=utf-8",
+  "transfer-encoding": "chunked",
+  "connection": "keep-alive",
+  "vary": "Accept,Cookie,Accept-Encoding",
+  "referrer-policy": "same-origin",
+  "x-frame-options": "DENY",
+  "x-content-type-options": "nosniff",
+  "allow": "OPTIONS, PUT",
+  "x-powered-by": "Phusion Passenger(R) 6.1.2",
+  "status": "200 OK",
+  "report-to": "{\"group\":\"cf-nel\",\"max_age\":604800,\"endpoints\":[{\"url\":\"https://a.nel.cloudflare.com/report/v4?s=HW0xNOZIKEfCgkg9PSUNpjHNSrvcsEBR%2FnqRWMVh4EKTz5Nq3LCjo1XQurGgLScOa%2BZJJnY2eLj2F69Uet8xMjW3uHDhbKitVYoZ%2FmnbFO0grxD7HUJDoWiaDTEk%2BaZvSVi%2BGwn79Zce\"}]}",
+  "server": "cloudflare",
+  "cf-cache-status": "DYNAMIC",
+  "nel": "{\"report_to\":\"cf-nel\",\"success_fraction\":0.0,\"max_age\":604800}",
+  "cf-ray": "9ec020d32d6c6b56-DFW",
+  "alt-svc": "h3=\":443\"; ma=86400"
+}
+DELETE Request: /api/deleteAccount
+Request Body (form): email=updateuser1776142622587%40example.com&password=Test%40123
+Response Status: 200 OK
+Response URL: https://automationexercise.com/api/deleteAccount
+Response Headers: {
+  "date": "Tue, 14 Apr 2026 04:57:11 GMT",
+  "content-type": "text/html; charset=utf-8",
+  "transfer-encoding": "chunked",
+  "connection": "keep-alive",
+  "vary": "Accept,Cookie,Accept-Encoding",
+  "referrer-policy": "same-origin",
+  "x-frame-options": "DENY",
+  "x-content-type-options": "nosniff",
+  "allow": "OPTIONS, DELETE",
+  "x-powered-by": "Phusion Passenger(R) 6.1.2",
+  "status": "200 OK",
+  "report-to": "{\"group\":\"cf-nel\",\"max_age\":604800,\"endpoints\":[{\"url\":\"https://a.nel.cloudflare.com/report/v4?s=anrAB9gSWsSE2teb%2FmcXo4EaDhwPeEN2P8xrmHhTuegHzImUxf1e%2BqFqUXC6D3qC%2BEqHeuDo2EiJlfV%2FegkqmC7zI8vhZaw85uVUYsxMBGrAJumrLEapZGIUnjX4zRRi9rtVhpMV7ZdC\"}]}",
+  "server": "cloudflare",
+  "cf-cache-status": "DYNAMIC",
+  "nel": "{\"report_to\":\"cf-nel\",\"success_fraction\":0.0,\"max_age\":604800}",
+  "cf-ray": "9ec020d52f086b56-DFW",
+  "alt-svc": "h3=\":443\"; ma=86400"
+}

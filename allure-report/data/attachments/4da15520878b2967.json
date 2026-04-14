@@ -1,0 +1,14 @@
+{
+  "bookingid": 2940,
+  "booking": {
+    "firstname": "E2E",
+    "lastname": "LifecycleTest",
+    "totalprice": 150,
+    "depositpaid": true,
+    "bookingdates": {
+      "checkin": "2024-08-01",
+      "checkout": "2024-08-10"
+    },
+    "additionalneeds": "Breakfast"
+  }
+}

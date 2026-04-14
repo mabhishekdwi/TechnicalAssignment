@@ -1,0 +1,11 @@
+
+							Your delivery address
+							Mr. Checkout User
+							Test Company
+							123 Main Street
+							Suite 100
+							New York New York
+								10001
+							United States
+							1234567890
+						

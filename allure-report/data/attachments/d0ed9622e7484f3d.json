@@ -1,0 +1,19 @@
+{
+  "name": "API Test User 1776142622587",
+  "email": "createuser1776142622587@example.com",
+  "password": "Test@123",
+  "title": "Mr",
+  "birth_date": "15",
+  "birth_month": "6",
+  "birth_year": "1990",
+  "firstname": "API",
+  "lastname": "User",
+  "company": "Test Company",
+  "address1": "123 API Street",
+  "address2": "Suite 100",
+  "country": "India",
+  "zipcode": "400001",
+  "state": "Maharashtra",
+  "city": "Mumbai",
+  "mobile_number": "9876543210"
+}

@@ -1,0 +1,21 @@
+{
+  "responseCode": 200,
+  "user": {
+    "id": 1584338,
+    "name": "API Test User 1776142622587",
+    "email": "getuser1776142622587@example.com",
+    "title": "Mr",
+    "birth_day": "15",
+    "birth_month": "6",
+    "birth_year": "1990",
+    "first_name": "API",
+    "last_name": "User",
+    "company": "Test Company",
+    "address1": "123 API Street",
+    "address2": "Suite 100",
+    "country": "India",
+    "state": "Maharashtra",
+    "city": "Mumbai",
+    "zipcode": "400001"
+  }
+}

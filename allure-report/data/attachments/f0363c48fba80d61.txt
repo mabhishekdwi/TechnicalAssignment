@@ -1,0 +1,23 @@
+GET Request: /api/brandsList
+Response Status: 200 OK
+Response URL: https://automationexercise.com/api/brandsList
+Response Headers: {
+  "date": "Tue, 14 Apr 2026 04:57:05 GMT",
+  "content-type": "text/html; charset=utf-8",
+  "transfer-encoding": "chunked",
+  "connection": "keep-alive",
+  "vary": "Accept,Cookie,Accept-Encoding",
+  "referrer-policy": "same-origin",
+  "x-frame-options": "DENY",
+  "x-content-type-options": "nosniff",
+  "allow": "GET, DELETE, PUT, OPTIONS, POST",
+  "x-powered-by": "Phusion Passenger(R) 6.1.2",
+  "status": "200 OK",
+  "report-to": "{\"group\":\"cf-nel\",\"max_age\":604800,\"endpoints\":[{\"url\":\"https://a.nel.cloudflare.com/report/v4?s=nYOz1YXC960tWRnSWSe7bQPBkqSUPO6qP3Xd6aY5sSN%2BhUC9aIXo3S9OXYr4OIzTKagSKesdTiYRKio9t9SQ3jUkUHqXXNpmiGvQUs1IJEL4VyhYUfgEITgCgLpCmQ4LcFrV%2FH%2BcS0SN\"}]}",
+  "server": "cloudflare",
+  "cf-cache-status": "DYNAMIC",
+  "nel": "{\"report_to\":\"cf-nel\",\"success_fraction\":0.0,\"max_age\":604800}",
+  "content-encoding": "br",
+  "cf-ray": "9ec020abefef6b56-DFW",
+  "alt-svc": "h3=\":443\"; ma=86400"
+}

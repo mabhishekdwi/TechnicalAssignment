@@ -1,0 +1,24 @@
+POST Request: /api/verifyLogin
+Request Body (form): email=invalid%40example.com&password=wrongpassword
+Response Status: 200 OK
+Response URL: https://automationexercise.com/api/verifyLogin
+Response Headers: {
+  "date": "Tue, 14 Apr 2026 04:57:09 GMT",
+  "content-type": "text/html; charset=utf-8",
+  "transfer-encoding": "chunked",
+  "connection": "keep-alive",
+  "vary": "Accept,Cookie,Accept-Encoding",
+  "referrer-policy": "same-origin",
+  "x-frame-options": "DENY",
+  "x-content-type-options": "nosniff",
+  "allow": "DELETE, OPTIONS, POST, PUT, GET",
+  "x-powered-by": "Phusion Passenger(R) 6.1.2",
+  "status": "200 OK",
+  "report-to": "{\"group\":\"cf-nel\",\"max_age\":604800,\"endpoints\":[{\"url\":\"https://a.nel.cloudflare.com/report/v4?s=ytVICcaonx2x4aRb%2FpoJ86YNiNaLJbJy2tSCN%2BIMu0vWFqKEfU3u%2BiAlBVA0uHq%2BRyHEdMWGQ%2BSU0OBQM5%2B%2FqiBUbcSMqLBqU5HZdCG4GeADRFbOzB86O6sVRvtB4PHJHK9bMjVTYD1u\"}]}",
+  "server": "cloudflare",
+  "cf-cache-status": "DYNAMIC",
+  "nel": "{\"report_to\":\"cf-nel\",\"success_fraction\":0.0,\"max_age\":604800}",
+  "content-encoding": "br",
+  "cf-ray": "9ec020c6ecc16b56-DFW",
+  "alt-svc": "h3=\":443\"; ma=86400"
+}

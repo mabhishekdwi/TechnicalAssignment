@@ -1,0 +1,11 @@
+{
+  "firstname": "E2E",
+  "lastname": "Updated",
+  "totalprice": 300,
+  "depositpaid": false,
+  "bookingdates": {
+    "checkin": "2024-09-01",
+    "checkout": "2024-09-15"
+  },
+  "additionalneeds": "Lunch and Dinner"
+}

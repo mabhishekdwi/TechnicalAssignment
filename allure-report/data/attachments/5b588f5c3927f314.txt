@@ -1,0 +1,47 @@
+POST Request: /api/createAccount
+Request Body (form): name=API+Test+User+1776142622587&email=createuser1776142622587%40example.com&password=Test%40123&title=Mr&birth_date=15&birth_month=6&birth_year=1990&firstname=API&lastname=User&company=Test+Company&address1=123+API+Street&address2=Suite+100&country=India&zipcode=400001&state=Maharashtra&city=Mumbai&mobile_number=9876543210
+Response Status: 200 OK
+Response URL: https://automationexercise.com/api/createAccount
+Response Headers: {
+  "date": "Tue, 14 Apr 2026 04:57:09 GMT",
+  "content-type": "text/html; charset=utf-8",
+  "transfer-encoding": "chunked",
+  "connection": "keep-alive",
+  "vary": "Accept,Cookie,Accept-Encoding",
+  "referrer-policy": "same-origin",
+  "x-frame-options": "DENY",
+  "x-content-type-options": "nosniff",
+  "allow": "OPTIONS, POST",
+  "x-powered-by": "Phusion Passenger(R) 6.1.2",
+  "status": "200 OK",
+  "report-to": "{\"group\":\"cf-nel\",\"max_age\":604800,\"endpoints\":[{\"url\":\"https://a.nel.cloudflare.com/report/v4?s=67rpni1s%2FYOMfPvuf1uWwVu7F4nYzhNdRe6vy5JIvzoCGSjYNC8prvRSsw3igwyU4Y70BGBdYHrx4OM%2FhJhKIfxHfMQYN1oP0mN40OfxKn5iXjh8D1kJ%2BGlBHVQP6BHyOkIdn7pJZTG1\"}]}",
+  "server": "cloudflare",
+  "cf-cache-status": "DYNAMIC",
+  "nel": "{\"report_to\":\"cf-nel\",\"success_fraction\":0.0,\"max_age\":604800}",
+  "content-encoding": "br",
+  "cf-ray": "9ec020c78d246b56-DFW",
+  "alt-svc": "h3=\":443\"; ma=86400"
+}
+DELETE Request: /api/deleteAccount
+Request Body (form): email=createuser1776142622587%40example.com&password=Test%40123
+Response Status: 200 OK
+Response URL: https://automationexercise.com/api/deleteAccount
+Response Headers: {
+  "date": "Tue, 14 Apr 2026 04:57:09 GMT",
+  "content-type": "text/html; charset=utf-8",
+  "transfer-encoding": "chunked",
+  "connection": "keep-alive",
+  "vary": "Accept,Cookie,Accept-Encoding",
+  "referrer-policy": "same-origin",
+  "x-frame-options": "DENY",
+  "x-content-type-options": "nosniff",
+  "allow": "DELETE, OPTIONS",
+  "x-powered-by": "Phusion Passenger(R) 6.1.2",
+  "status": "200 OK",
+  "report-to": "{\"group\":\"cf-nel\",\"max_age\":604800,\"endpoints\":[{\"url\":\"https://a.nel.cloudflare.com/report/v4?s=khFFVRAd%2F5%2BQhcVR3F%2Fm0TuLNvZQNd8J0g4pJ%2BBqvXwSO8CmAMA9L5DbOiBPx6DuLorZJBVqiv5Kn25WVpvt1hRnULKAbyjF5cQeOkES02gcyBdhPC7cKpevjfx%2BkY8B40woK5Iaodt7\"}]}",
+  "server": "cloudflare",
+  "cf-cache-status": "DYNAMIC",
+  "nel": "{\"report_to\":\"cf-nel\",\"success_fraction\":0.0,\"max_age\":604800}",
+  "cf-ray": "9ec020c8be096b56-DFW",
+  "alt-svc": "h3=\":443\"; ma=86400"
+}

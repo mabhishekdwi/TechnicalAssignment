@@ -1,0 +1,24 @@
+POST Request: /api/searchProduct
+Request Body (form): search_product=top
+Response Status: 200 OK
+Response URL: https://automationexercise.com/api/searchProduct
+Response Headers: {
+  "date": "Tue, 14 Apr 2026 04:57:06 GMT",
+  "content-type": "text/html; charset=utf-8",
+  "transfer-encoding": "chunked",
+  "connection": "keep-alive",
+  "vary": "Accept,Cookie,Accept-Encoding",
+  "referrer-policy": "same-origin",
+  "x-frame-options": "DENY",
+  "x-content-type-options": "nosniff",
+  "allow": "DELETE, OPTIONS, POST, PUT, GET",
+  "x-powered-by": "Phusion Passenger(R) 6.1.2",
+  "status": "200 OK",
+  "report-to": "{\"group\":\"cf-nel\",\"max_age\":604800,\"endpoints\":[{\"url\":\"https://a.nel.cloudflare.com/report/v4?s=PXF8utczffbvB%2FwH%2FsGdHQH847koII6vAepY6SB%2FYJM5duRPY8vsfINq%2F8D%2BvglnB5WxUQfrfzEqxwEdkXI8tHSurlW4FVNswOSxHSVdQST11uRGmwjpNGBycLRKNV9CLeIKolgDd5cZ\"}]}",
+  "server": "cloudflare",
+  "cf-cache-status": "DYNAMIC",
+  "nel": "{\"report_to\":\"cf-nel\",\"success_fraction\":0.0,\"max_age\":604800}",
+  "content-encoding": "br",
+  "cf-ray": "9ec020b24c516b56-DFW",
+  "alt-svc": "h3=\":443\"; ma=86400"
+}
